@@ -1,0 +1,30 @@
+openapi: 3.0.1
+
+info:
+  title: ""
+  version: ""
+
+paths:
+  /renderpdf:
+    post:
+      operationId: postRenderPdf
+      summary: Rendern a PDF into images
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                inputFs:
+                  $ref: "#/components/schemas/InputFs"
+      responses:
+        200:
+          description: "ZIP containing one image file per PDF page"
+          content:
+            application/zip: {}
+
+components:
+  schemas:
+    InputFs:
+      type: string
+      format: binary

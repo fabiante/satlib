@@ -1,0 +1,36 @@
+openapi: 3.0.1
+
+info:
+  title: ""
+  version: ""
+
+paths:
+  /zbarimg:
+    post:
+      operationId: postZbarImg
+      summary: Extract Barcodes with zbar
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                inputFs:
+                  $ref: "#/components/schemas/InputFs"
+      responses:
+        200:
+          description: "Extraction did not critically fail. Check stdout / stderr"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code: { type: "integer" }
+                  stdout: { type: "string" }
+                  stderr: { type: "string" }
+
+components:
+  schemas:
+    InputFs:
+      type: string
+      format: binary

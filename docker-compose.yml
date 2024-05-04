@@ -1,0 +1,31 @@
+services:
+  traefik:
+    image: traefik:v3.0
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    ports:
+      - "8080:80"
+
+  renderpdf:
+    image: satlib/contrib-renderpdf:latest
+    build:
+      context: .
+      dockerfile: contrib/renderpdf/Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.renderpdf.rule=PathPrefix(`/renderpdf`)"
+      - "traefik.http.services.renderpdf.loadbalancer.server.port=8080"
+
+  zbarimg:
+    image: satlib/contrib-zbarimg:latest
+    build:
+      context: .
+      dockerfile: contrib/zbarimg/Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.zbarimg.rule=PathPrefix(`/zbarimg`)"
+      - "traefik.http.services.zbarimg.loadbalancer.server.port=8080"
