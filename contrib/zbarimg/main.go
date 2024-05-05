@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	sdk.Run(Handle)
+	sdk.Setup().Run(Handle)
 }
 
 func Handle(ctx *sdk.Context) error {

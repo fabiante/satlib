@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func Run(handler func(ctx *Context) error) {
+func run(handler func(ctx *Context) error) {
 	addr := fmt.Sprintf(":%v", getEnv("PORT", "8080"))
 
 	slog.Info("SDK listening", "addr", addr)
