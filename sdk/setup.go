@@ -1,5 +1,11 @@
 package sdk
 
+import (
+	"fmt"
+	"log/slog"
+	"net/http"
+)
+
 type setupOption func(*setup) error
 
 type setup struct {
@@ -18,5 +24,18 @@ func Setup(opts ...setupOption) *setup {
 }
 
 func (s *setup) Run(handler func(ctx *Context) error) {
-	run(handler)
+	addr := fmt.Sprintf(":%v", getEnv("PORT", "8080"))
+
+	slog.Info("SDK listening", "addr", addr)
+
+	err := http.ListenAndServe(addr, http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+		ctx := newContext(request, writer)
+		if err := handler(ctx); err != nil {
+			panic(err)
+		}
+	}))
+
+	if err != nil {
+		panic(err)
+	}
 }
