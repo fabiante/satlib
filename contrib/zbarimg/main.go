@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	_ "embed"
 	"errors"
 	"log/slog"
 	"os/exec"
@@ -10,8 +11,13 @@ import (
 	"github.com/spf13/afero"
 )
 
+//go:embed openapi.yml
+var openApiSpec []byte
+
 func main() {
-	sdk.Run(Handle)
+	sdk.Setup(
+		sdk.WithOpenApiSpec(openApiSpec),
+	).Run(Handle)
 }
 
 func Handle(ctx *sdk.Context) error {
