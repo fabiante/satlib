@@ -28,12 +28,16 @@ func (s *setup) Run(handler func(ctx *Context) error) {
 
 	slog.Info("SDK listening", "addr", addr)
 
-	err := http.ListenAndServe(addr, http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
 		ctx := newContext(request, writer)
 		if err := handler(ctx); err != nil {
 			panic(err)
 		}
-	}))
+	})
+
+	err := http.ListenAndServe(addr, mux)
 
 	if err != nil {
 		panic(err)
