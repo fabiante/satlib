@@ -6,7 +6,7 @@ type SetupOption func(*setup) error
 
 func withHandler(path string, handler http.HandlerFunc) SetupOption {
 	return func(s *setup) error {
-		s.handlers[path] = handler
+		s.httpHandlers[path] = handler
 		return nil
 	}
 }

@@ -7,12 +7,12 @@ import (
 )
 
 type setup struct {
-	handlers map[string]http.HandlerFunc
+	httpHandlers map[string]http.HandlerFunc
 }
 
 func Setup(opts ...SetupOption) *setup {
 	s := &setup{
-		handlers: make(map[string]http.HandlerFunc),
+		httpHandlers: make(map[string]http.HandlerFunc),
 	}
 
 	for _, opt := range opts {
@@ -31,17 +31,18 @@ func (s *setup) Run(handler func(ctx *HttpContext) error) {
 
 	mux := http.NewServeMux()
 
-	// Register custom handlers
-	for path, handler := range s.handlers {
-		mux.HandleFunc(path, handler)
-	}
-
-	mux.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
+	// Add main handler to handler set
+	s.httpHandlers["/"] = func(writer http.ResponseWriter, request *http.Request) {
 		ctx := newContext(request, writer)
 		if err := handler(ctx); err != nil {
 			panic(err)
 		}
-	})
+	}
+
+	// Register http handlers
+	for path, handler := range s.httpHandlers {
+		mux.HandleFunc(path, handler)
+	}
 
 	err := http.ListenAndServe(addr, mux)
 
