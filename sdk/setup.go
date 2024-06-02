@@ -26,7 +26,7 @@ func Setup(opts ...SetupOption) *setup {
 	return s
 }
 
-func (s *setup) Run(handler func(ctx *Context) error) {
+func (s *setup) Run(handler func(ctx *HttpContext) error) {
 	addr := fmt.Sprintf(":%v", getEnv("PORT", "8080"))
 
 	slog.Info("SDK listening", "addr", addr)
