@@ -20,7 +20,7 @@ func main() {
 	).Run(Handle)
 }
 
-func Handle(ctx *sdk.Context) error {
+func Handle(ctx *sdk.HttpContext) error {
 	request, response := ctx.Http()
 
 	// Setup workdir
